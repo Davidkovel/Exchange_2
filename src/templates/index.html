@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/static/exchange_2.css">
+    <title>Crypto </title>
+</head>
+<body>
+    <header>
+        <div class="logo">CryptoExchange</div>
+        <div class="auth-buttons">
+            <button id="loginBtn" class="btn btn-login">Войти</button>
+            <button id="registerBtn" class="btn btn-register">Регистрация</button>
+            <button id="logoutBtn" class="btn btn-logout hidden">Выйти</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="wallet-card hidden" id="walletSection">
+            <div class="wallet-header">
+                <h2 class="wallet-title">Ваш криптокошелек</h2>
+            </div>
+
+            <div class="info-row">
+                <strong>Адрес кошелька:</strong>
+                <div class="wallet-address" id="walletAddress"></div>
+            </div>
+
+            <div class="info-row">
+                <strong>Баланс:</strong>
+                <div class="wallet-balance" id="walletBalance">USDT</div>
+            </div>
+
+            <button class="btn btn-withdraw" id="withdrawBtn">Вывести средства</button>
+        </div>
+
+        <div id="guestMessage" style="text-align: center; margin-top: 50px;">
+            <h2>Добро пожаловать в CryptoExchange</h2>
+            <p style="margin-top: 20px;">Войдите или зарегистрируйтесь, чтобы получить доступ к вашему кошельку</p>
+        </div>
+    </main>
+
+    <script>
+        // DOM элементы
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const walletSection = document.getElementById('walletSection');
+        const guestMessage = document.getElementById('guestMessage');
+        const walletAddress = document.getElementById('walletAddress');
+        const walletBalance = document.getElementById('walletBalance');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+
+        // Проверка авторизации при загрузке
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('access_token');
+
+            if (token) {
+                try {
+                    const userData = await fetchUserData(token);
+                    showAuthenticatedUI(userData);
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    handleUnauthorized();
+                }
+            } else {
+                handleUnauthorized();
+            }
+        });
+
+        // Обработчики кнопок
+        loginBtn.addEventListener('click', () => {
+            window.location.href = '/login-page';
+        });
+
+        registerBtn.addEventListener('click', () => {
+            window.location.href = '/login-page';
+        });
+
+        logoutBtn.addEventListener('click', logout);
+
+        withdrawBtn.addEventListener('click', () => {
+            window.location.href = '/withdraw-page';
+        });
+
+        // Функции
+        async function fetchUserData(token) {
+            const response = await fetch('/api/auth/me/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка получения данных');
+            }
+
+            return await response.json();
+        }
+
+        function showAuthenticatedUI(userData) {
+            // Показываем элементы для авторизованных пользователей
+            loginBtn.classList.add('hidden');
+            registerBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            walletSection.classList.remove('hidden');
+            guestMessage.classList.add('hidden');
+
+            // Заполняем данные
+            walletAddress.textContent = userData.wallet_address || 'Не указан';
+            walletBalance.textContent = userData.user_balance ? `${userData.user_balance} USDT` : `0.00 USDT`;
+            // Здесь можно добавить запрос для получения баланса
+        }
+
+        function handleUnauthorized() {
+            // Показываем элементы для гостей
+            loginBtn.classList.remove('hidden');
+            registerBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            walletSection.classList.add('hidden');
+            guestMessage.classList.remove('hidden');
+
+            // Очищаем данные
+            walletAddress.textContent = '';
+            walletBalance.textContent = '0.00 USDT';
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            handleUnauthorized();
+        }
+    </script>
+</body>
+</html>

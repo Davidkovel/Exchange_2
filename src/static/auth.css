@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #131924;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #1a2236;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header h2 {
+    color: #4dabf7;
+    margin-bottom: 10px;
+}
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2a3a5a;
+}
+
+.auth-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #7a8cb1;
+    transition: all 0.3s ease;
+}
+
+.auth-tab.active {
+    color: #4dabf7;
+    border-bottom: 2px solid #4dabf7;
+    margin-bottom: -1px;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #a1b0cb;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #131924;
+    border: 1px solid #2a3a5a;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4dabf7;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #4dabf7;
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #3a8bc8;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    color: #7a8cb1;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #2a3a5a;
+}
+
+.divider::before {
+    margin-right: 10px;
+}
+
+.divider::after {
+    margin-left: 10px;
+}
+
+.btn-google {
+    background-color: #ffffff;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-google:hover {
+    background-color: #eeeeee;
+}
+
+.error-message {
+    color: #ff4757;
+    margin-top: 5px;
+    font-size: 14px;
+    display: none;
+}

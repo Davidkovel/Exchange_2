@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/static/send_payment.css">
+    <title>Crypto Exchange</title>
+</head>
+<body>
+    <header>
+        <div class="logo">CryptoExchange</div>
+        <div class="auth-buttons">
+            <button id="loginBtn" class="btn btn-login">Войти</button>
+            <button id="registerBtn" class="btn btn-register">Регистрация</button>
+            <button id="logoutBtn" class="btn btn-logout hidden">Выйти</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="wallet-card" id="walletSection">
+            <div class="wallet-header">
+                <h2 class="wallet-title">Вывод средств</h2>
+            </div>
+
+            <div class="info-row">
+                <strong>Введите адрес для получение (usdt erc20 сеть):</strong>
+                <input type="text" id="recipientAddressToSend" placeholder="0x..." class="form-input">
+            </div>
+
+            <div class="info-row-2">
+                <strong>Введите количество usdt для отправки:</strong>
+                <input type="text" id="amountToSend" placeholder="1000" class="form-input">
+            </div>
+
+            <button class="btn btn-withdraw" id="withdrawBtn">Отправить</button>
+        </div>
+    </main>
+
+    <script>
+        // DOM элементы
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const walletSection = document.getElementById('walletSection');
+        const withdrawBtn = document.getElementById('withdrawBtn');
+
+        // Проверка авторизации при загрузке
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('access_token');
+
+            if (token) {
+                try {
+                    const userData = await fetchUserData(token);
+                    showAuthenticatedUI(userData);
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    handleUnauthorized();
+                }
+            } else {
+                handleUnauthorized();
+            }
+        });
+
+        // Обработчики кнопок
+        loginBtn.addEventListener('click', () => {
+            window.location.href = '/login-page';
+        });
+
+        registerBtn.addEventListener('click', () => {
+            window.location.href = '/login-page';
+        });
+
+        logoutBtn.addEventListener('click', logout);
+
+        withdrawBtn.addEventListener('click', handleWithdraw);
+
+        async function handleWithdraw() {
+            const recipientAddress = document.getElementById('recipientAddressToSend').value.trim();
+            const amount = document.getElementById('amountToSend').value;
+            const token = localStorage.getItem('access_token');
+
+            if (!recipientAddress || !amount) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            if (isNaN(amount) || parseFloat(amount) <= 0) {
+                alert('Введите корректное количество USDT для отправки');
+                return;
+            }
+
+            const WithdrawRequestModel = {
+                trx_wallet: recipientAddress,
+                usdt_amount: amount
+            };
+
+            try {
+                const response = await fetch('/api/transactions/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(WithdrawRequestModel)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(`Ошибка: Пожалуйста убедитесь что вы отправляете сумму меньше чем на балансе}`);
+                    return;
+                }
+                alert(`Запрос на вывод ${amount} USDT на адрес ${recipientAddress} отправлен`);
+                window.location.href = 'http://127.0.0.2:8001/';
+
+            } catch (error) {
+                console.error('Ошибка при отправке запроса на вывод:', error);
+                alert('Произошла ошибка при отправке запроса на вывод средств');
+                return;
+            }
+        }
+
+        // Функции
+        async function fetchUserData(token) {
+            const response = await fetch('/api/auth/me/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка получения данных');
+            }
+
+            return await response.json();
+        }
+
+        function showAuthenticatedUI(userData) {
+            // Показываем элементы для авторизованных пользователей
+            loginBtn.classList.add('hidden');
+            registerBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+
+        }
+
+        function handleUnauthorized() {
+            // Показываем элементы для гостей
+            loginBtn.classList.remove('hidden');
+            registerBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+
+            // Очищаем данные
+            walletBalance.textContent = '0.00 TRX';
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            handleUnauthorized();
+        }
+    </script>
+</body>
+</html>

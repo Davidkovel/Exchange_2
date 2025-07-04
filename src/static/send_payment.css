@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #131924;
+    color: #ffffff;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background-color: #1a2236;
+    border-bottom: 1px solid #2a3a5a;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4dabf7;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-login {
+    background-color: #4dabf7;
+    color: white;
+}
+
+.btn-register {
+    background-color: transparent;
+    color: #4dabf7;
+    border: 1px solid #4dabf7;
+}
+
+.btn-logout {
+    background-color: #ff4757;
+    color: white;
+}
+
+.btn-withdraw {
+    background-color: #2ed573;
+    color: white;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+main {
+    padding: 40px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.wallet-card {
+    background-color: #1a2236;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.wallet-title {
+    font-size: 22px;
+    color: #4dabf7;
+}
+
+.wallet-address {
+    background-color: #131924;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    word-break: break-all;
+    margin: 20px 0;
+    border: 1px solid #2a3a5a;
+}
+
+.wallet-balance {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #4dabf7;
+}
+
+strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+input.form-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #2a3a5a;
+    background-color: #131924;
+    color: #ffffff;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
