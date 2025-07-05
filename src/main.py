@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import time
 
 from contextlib import asynccontextmanager
 
@@ -25,7 +26,7 @@ from src.data.user_balance_commands import insert_money_by_user_wallet_address
 from src.database.db import create_all_tables, db_pool
 from src.logger import logger
 from src.routers.auth.schemas import DepositRequestModel
-from src.routers.auth.views import router as auth_router
+from src.routers.auth.views import router as auth_router, login
 from src.routers.payment.views import transaction_router
 
 from src.services.bot import start_bot
@@ -54,7 +55,13 @@ async def db_session_middleware(request: Request, call_next: RequestResponseEndp
 
 
 async def consume_messages():
-    connection = await aio_pika.connect_robust("amqp://guest:guest@127.0.0.1/")
+    time.sleep(11)
+    connection = await aio_pika.connect_robust(
+        host="rabbitmq",
+        port=5672,
+        login="admin",
+        password="admin"
+    )
 
     channel = await connection.channel()
 
@@ -114,8 +121,13 @@ async def withdraw_page(request: Request):
 def main():
     app.include_router(router=auth_router)
     app.include_router(router=transaction_router)
-    uvicorn.run(app, host="127.0.0.2", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
     main()
+
+
+# gate торговый пароль 000000
+
+# http://localhost:8000/docs/

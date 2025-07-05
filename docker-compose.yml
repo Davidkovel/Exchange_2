@@ -7,6 +7,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 30s
+      retries: 15
+
   postgres:
     image: postgres:latest
     environment:
@@ -17,34 +23,31 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8001:8001"
-#    environment:
-#      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
-#      - RABBITMQ_URL=amqp://admin:admin@rabbitmq:5672/
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+      - RABBITMQ_URL=amqp://admin:admin@rabbitmq/
     depends_on:
-      - rabbitmq
-      - postgres
-    restart: unless-stopped
-
-
-  nginx-proxy-manager:
-    image: 'jc21/nginx-proxy-manager:latest'
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     volumes:
-      - ./npm_data:/data
-      - ./npm_letsencrypt:/etc/letsencrypt
-    depends_on:
-      - backend
+      - ./src/templates:/app/src/templates
+      - ./src/static:/app/src/static
+
+    restart: unless-stopped
 
 
 volumes:
