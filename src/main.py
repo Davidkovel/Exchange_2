@@ -118,22 +118,23 @@ async def withdraw_page(request: Request):
     return response
 
 
+app.include_router(router=auth_router)
+app.include_router(router=transaction_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # или конкретный домен вместо "*"
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 def main():
-    app.include_router(router=auth_router)
-    app.include_router(router=transaction_router)
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],  # или конкретный домен вместо "*"
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
     main()
-
 
 # gate торговый пароль 000000
 
