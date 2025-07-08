@@ -164,7 +164,7 @@
                     const contentType = response.headers.get('Content-Type') || '';
                     if (contentType.includes('application/json')) {
                         const error = await response.json();
-                        detail = error?.detail || '';
+                        detail = error?.detail || 'Try again sign up';
                     } else {
                         detail = await response.text();  // безопасно получить текст
                     }
