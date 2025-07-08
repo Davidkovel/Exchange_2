@@ -18,12 +18,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: postgres  # Будет создана автоматически
-      POSTGRES_APP_USER: app_user  # Новый пользователь для приложения
-      POSTGRES_APP_PASSWORD: app_password  # Пароль для приложения
-      POSTGRES_APP_DB: app_db  # Отдельная БД для приложения
+      POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     ports:
       - "5432:5432"
     healthcheck:
