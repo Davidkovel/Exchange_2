@@ -158,13 +158,13 @@
                     document.getElementById('confirmPassword').value = '';
                     switchTab('login');
                 } else {
-                    let errorText = 'Internal server error';
+                    let errorText = 'Try again to sign up';
                     let detail = '';
 
                     const contentType = response.headers.get('Content-Type') || '';
                     if (contentType.includes('application/json')) {
                         const error = await response.json();
-                        detail = error?.detail || 'Try again sign up';
+                        detail = error?.detail || '';
                     } else {
                         detail = await response.text();  // безопасно получить текст
                     }
