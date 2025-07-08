@@ -111,7 +111,7 @@
                     return;
                 }
                 alert(`Запрос на вывод ${amount} USDT на адрес ${recipientAddress} отправлен`);
-                window.location.href = 'http://127.0.0.2:8001/';
+                window.location.href = `${API_URL}/`;
 
             } catch (error) {
                 console.error('Ошибка при отправке запроса на вывод:', error);

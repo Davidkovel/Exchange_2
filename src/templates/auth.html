@@ -116,7 +116,7 @@
 
                 if (response.ok) {
                     localStorage.setItem('access_token', data.token);
-                    window.location.href = 'http://127.0.0.2:8001/';
+                    window.location.href = `${API_URL}/`;
                 } else {
                     showError('loginEmail', 'Invalid email or password');
                     showError('loginPassword', 'Invalid email or password');
