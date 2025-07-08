@@ -158,11 +158,19 @@
                     document.getElementById('confirmPassword').value = '';
                     switchTab('login');
                 } else {
-                    const error = await response.json();
-                    if (error.detail.includes('email')) {
-                        showError('registerEmail', error.detail);
+                    const contentType = response.headers.get('Content-Type') || '';
+
+                    if (contentType.includes('application/json')) {
+                        const error = await response.json();
+                        if (error.detail && error.detail.includes('email')) {
+                            showError('registerEmail', error.detail);
+                        } else {
+                            showError('registerPassword', error.detail || 'Registration failed');
+                        }
                     } else {
-                        showError('registerPassword', error.detail);
+                        const text = await response.text();
+                        console.error('Server error:', text);
+                        showError('registerEmail', 'Internal server error');
                     }
                 }
             } catch (error) {
