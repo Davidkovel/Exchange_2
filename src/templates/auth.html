@@ -127,6 +127,7 @@
             }
         }
 
+        let firstTryFailed = true;
         // Обработка регистрации
         async function handleRegister(event) {
             event.preventDefault();
@@ -157,8 +158,9 @@
                     event.target.reset();
                     document.getElementById('confirmPassword').value = '';
                     switchTab('login');
+                    firstTryFailed = true;
                 } else {
-                    let errorText = 'Try again to sign up';
+                    let errorText = 'Try again to sign up ';
                     let detail = '';
 
                     const contentType = response.headers.get('Content-Type') || '';
@@ -169,10 +171,13 @@
                         detail = await response.text();  // безопасно получить текст
                     }
 
-                    if (detail.includes('already') || detail.includes('registered') || detail.includes('exists')) {
+                    if (firstTryFailed) {
+                        showError('registerEmail', errorText);
+                        firstTryFailed = false;  // следующая ошибка уже покажет реальный текст
+                    } else if (response.status === 409) {
                         showError('registerEmail', detail);
                     } else {
-                        showError('registerEmail', errorText);  // просто покажем общую ошибку
+                        showError('registerEmail', errorText);
                     }
 
                     console.warn('Registration error detail:', detail);
