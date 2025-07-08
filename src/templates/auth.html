@@ -158,11 +158,6 @@
                     document.getElementById('confirmPassword').value = '';
                     switchTab('login');
                 } else {
-                    if (response.status === 500) {
-                        // console.warn('Server error (500) occurred, but not showing to user');
-                        return;
-                    }
-
                     let errorText = 'Internal server error';
                     let detail = '';
 
