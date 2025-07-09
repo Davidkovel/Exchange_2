@@ -4,35 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="src/static/send_payment.css">
-    <title>Crypto Exchange</title>
+    <title>VaultX</title>
 </head>
 <body>
     <header>
-        <div class="logo">CryptoExchange</div>
+        <div class="logo">VaultX</div>
         <div class="auth-buttons">
-            <button id="loginBtn" class="btn btn-login">Войти</button>
-            <button id="registerBtn" class="btn btn-register">Регистрация</button>
-            <button id="logoutBtn" class="btn btn-logout hidden">Выйти</button>
+            <button id="loginBtn" class="btn btn-login">Кириш</button>
+            <button id="registerBtn" class="btn btn-register">Рўйхатдан ўтиш</button>
+            <button id="logoutBtn" class="btn btn-logout hidden">Чиқиш</button>
         </div>
     </header>
 
     <main>
         <div class="wallet-card" id="walletSection">
             <div class="wallet-header">
-                <h2 class="wallet-title">Вывод средств</h2>
+                <h2 class="wallet-title">Маблағ ечиб олиш</h2>
             </div>
 
             <div class="info-row">
-                <strong>Введите адрес для получение (usdt erc20 сеть):</strong>
+                <strong>Қабул қилиш учун манзилни киритинг (USDT ERC20 тармоқ):</strong>
                 <input type="text" id="recipientAddressToSend" placeholder="0x..." class="form-input">
             </div>
 
             <div class="info-row-2">
-                <strong>Введите количество usdt для отправки:</strong>
+                <strong>Юбориш учун USDT миқдорини киритинг:</strong>
                 <input type="text" id="amountToSend" placeholder="1000" class="form-input">
             </div>
 
-            <button class="btn btn-withdraw" id="withdrawBtn">Отправить</button>
+            <button class="btn btn-withdraw" id="withdrawBtn">Юбориш</button>
         </div>
     </main>
 
@@ -80,12 +80,12 @@
             const token = localStorage.getItem('access_token');
 
             if (!recipientAddress || !amount) {
-                alert('Пожалуйста, заполните все поля');
+                alert('Илтимос, барча майдонларни тўлдиринг');
                 return;
             }
 
             if (isNaN(amount) || parseFloat(amount) <= 0) {
-                alert('Введите корректное количество USDT для отправки');
+                alert('Юбориш учун тўғри USDT миқдорини киритинг');
                 return;
             }
 
@@ -107,10 +107,10 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    alert(`Ошибка: Пожалуйста убедитесь что вы отправляете сумму меньше чем на балансе}`);
+                    alert(`Хатолик: Илтимос, юборилаётган сумма балансингиздан камлигини текширинг}`);
                     return;
                 }
-                alert(`Запрос на вывод ${amount} USDT на адрес ${recipientAddress} отправлен`);
+                alert(`Чиқариш сўрови: ${amount} USDT манзилга юборилди ${recipientAddress}`);
                 window.location.href = `${API_URL}/`;
 
             } catch (error) {
@@ -129,7 +129,7 @@
             });
 
             if (!response.ok) {
-                throw new Error('Ошибка получения данных');
+                throw new Error('Маълумотларни олишда хатолик');
             }
 
             return await response.json();
