@@ -13,6 +13,6 @@ class WithdrawTransaction(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     trx_wallet = Column(String, nullable=False)
     usdt_amount = Column(Float, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    #timestamp = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", foreign_keys=[user_id])
