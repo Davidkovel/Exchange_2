@@ -1,6 +1,6 @@
 from typing import Union
 
-from sqlalchemy import select, or_, update
+from sqlalchemy import select, or_, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.routers.auth.schemas import OAuthForm, userEmail, UserModel
@@ -88,9 +88,7 @@ async def withdraw_balance_by_user_email(db_session: AsyncSession, user_email: u
 
 
 async def get_withdraw_count(db_session: AsyncSession, user_id: id) -> int:
-    stmt = (
-        select(WithdrawTransaction).filter(WithdrawTransaction.user_id == user_id).count()
-    )
+    stmt = select(func.count()).where(WithdrawTransaction.user_id == user_id)
 
     result = await db_session.execute(stmt)
-    return result
+    return result.scalar_one()  # Возвращает конкретное числовое значение
