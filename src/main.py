@@ -56,12 +56,12 @@ async def db_session_middleware(request: Request, call_next: RequestResponseEndp
 
 async def consume_messages():
     time.sleep(11)
-    connection = await aio_pika.connect_robust(
-        host="rabbitmq",
-        port=5672,
-        login="admin",
-        password="admin"
-    )
+    # connection = await aio_pika.connect_robust(
+    #     host="rabbitmq",
+    #     port=5672,
+    #     login="admin",
+    #     password="admin"
+    # )
     connection = await aio_pika.connect_robust("amqp://admin:admin@rabbitmq/")
 
     channel = await connection.channel()
