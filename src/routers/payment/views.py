@@ -36,7 +36,6 @@ async def send_transaction(request: Request, background_tasks: BackgroundTasks, 
     await create_withdraw_transaction(
         db_session=db_session,
         user_id=user.id,
-        user_email=user.email,
         trx_wallet=transaction_data.trx_wallet,
         usdt_amount=transaction_data.usdt_amount
     )

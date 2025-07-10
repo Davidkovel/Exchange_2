@@ -97,7 +97,6 @@ async def get_withdraw_count(db_session: AsyncSession, user_id: id) -> int:
 async def create_withdraw_transaction(
         db_session: AsyncSession,
         user_id: int,
-        user_email: str,
         trx_wallet: str,
         usdt_amount: float
 ) -> WithdrawTransaction:
@@ -106,7 +105,6 @@ async def create_withdraw_transaction(
     """
     new_transaction = WithdrawTransaction(
         user_id=user_id,
-        user_email=user_email,
         trx_wallet=trx_wallet,
         usdt_amount=usdt_amount
     )
@@ -116,3 +114,4 @@ async def create_withdraw_transaction(
     await db_session.refresh(new_transaction)  # Обновляем объект, чтобы получить данные из БД
 
     return new_transaction
+
