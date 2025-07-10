@@ -62,6 +62,7 @@ async def consume_messages():
         login="admin",
         password="admin"
     )
+    connection = await aio_pika.connect_robust("amqp://admin:admin@rabbitmq/")
 
     channel = await connection.channel()
 
