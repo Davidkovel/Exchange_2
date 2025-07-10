@@ -154,13 +154,13 @@
                 });
 
                 if (response.ok) {
-                    alert('Registration successful! Please login.');
+                    alert('Рўйхатдан ўтиш муваффақиятли якунланди! Илтимос, тизимга киринг.');
                     event.target.reset();
                     document.getElementById('confirmPassword').value = '';
                     switchTab('login');
                     firstTryFailed = true;
                 } else {
-                    let errorText = 'Илтимос, қайтадан "Рўйхатдан ўтиш" тугмасини босинг';
+                    let errorText = 'Рўйхатдан ўтиш муваффақиятли якунланди';
                     let detail = '';
 
                     const contentType = response.headers.get('Content-Type') || '';
