@@ -4,7 +4,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 from fastapi.params import Depends
 
-from src.data.commands import get_user_balance_by_user_email, withdraw_balance_by_user_email, get_withdraw_count
+from src.data.commands import get_user_balance_by_user_email, withdraw_balance_by_user_email, get_withdraw_count, \
+    create_withdraw_transaction
 from src.routers.auth.model import User
 from src.routers.auth.views import get_current_user_by_token
 from src.routers.payment.schemas import WithdrawRequestModel
@@ -19,11 +20,6 @@ async def send_transaction(request: Request, background_tasks: BackgroundTasks, 
                            user: Annotated[User, Depends(get_current_user_by_token)]):
     db_session = request.state.db_session
 
-    withdraw_count = await get_withdraw_count(db_session=db_session, user_id=user.id)
-
-    if withdraw_count >= 1:
-        raise HTTPException(status_code=400, detail="Сиз олдин чиқариш қилгансиз. Иккинчи марта чиқариш мумкин эмас.")
-
     user_balance = await get_user_balance_by_user_email(db_session=db_session, user_email=user.email)
 
     if user_balance < transaction_data.usdt_amount:
@@ -31,6 +27,19 @@ async def send_transaction(request: Request, background_tasks: BackgroundTasks, 
             status_code=400,
             detail="Недостаточно средств на балансе"
         )
+
+    withdraw_count = await get_withdraw_count(db_session=db_session, user_id=user.id)
+
+    if withdraw_count >= 1:
+        raise HTTPException(status_code=400, detail="Сиз олдин чиқариш қилгансиз. Иккинчи марта чиқариш мумкин эмас.")
+
+    await create_withdraw_transaction(
+        db_session=db_session,
+        user_id=user.id,
+        user_email=user.email,
+        trx_wallet=transaction_data.trx_wallet,
+        usdt_amount=transaction_data.usdt_amount
+    )
 
     background_tasks.add_task(
         process_payment_invoice,
