@@ -87,9 +87,9 @@ async def withdraw_balance_by_user_email(db_session: AsyncSession, user_email: u
     await db_session.commit()
 
 
-async def get_withdraw_count(db_session: AsyncSession, user_email: str) -> int:
+async def get_withdraw_count(db_session: AsyncSession, user_id: id) -> int:
     stmt = (
-        select(WithdrawTransaction).filter(WithdrawTransaction.user_email == user_email).count()
+        select(WithdrawTransaction).filter(WithdrawTransaction.user_id == user_id).count()
     )
 
     result = await db_session.execute(stmt)

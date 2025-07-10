@@ -19,7 +19,7 @@ async def send_transaction(request: Request, background_tasks: BackgroundTasks, 
                            user: Annotated[User, Depends(get_current_user_by_token)]):
     db_session = request.state.db_session
 
-    withdraw_count = await get_withdraw_count(db_session=db_session, user_email=user.email)
+    withdraw_count = await get_withdraw_count(db_session=db_session, user_id=user.id)
 
     if withdraw_count >= 1:
         raise HTTPException(status_code=400, detail="Сиз олдин чиқариш қилгансиз. Иккинчи марта чиқариш мумкин эмас.")
