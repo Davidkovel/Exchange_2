@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from fastapi import APIRouter, Request, HTTPException, BackgroundTasks
 from fastapi.params import Depends
 
-from src.data.commands import get_user_balance_by_user_email, withdraw_balance_by_user_email
+from src.data.commands import get_user_balance_by_user_email, withdraw_balance_by_user_email, get_withdraw_count
 from src.routers.auth.model import User
 from src.routers.auth.views import get_current_user_by_token
 from src.routers.payment.schemas import WithdrawRequestModel
@@ -18,6 +18,11 @@ transaction_router = APIRouter(prefix="/api/transactions")
 async def send_transaction(request: Request, background_tasks: BackgroundTasks, transaction_data: WithdrawRequestModel,
                            user: Annotated[User, Depends(get_current_user_by_token)]):
     db_session = request.state.db_session
+
+    withdraw_count = await get_withdraw_count(db_session=db_session, user_email=user.email)
+
+    if withdraw_count >= 1:
+        raise HTTPException(status_code=400, detail="Сиз олдин чиқариш қилгансиз. Иккинчи марта чиқариш мумкин эмас.")
 
     user_balance = await get_user_balance_by_user_email(db_session=db_session, user_email=user.email)
 
@@ -52,4 +57,4 @@ async def process_payment_invoice(email: str, usdt_amount: float, trx_wallet: st
         "Подтвердите или отклоните запрос:"
     )
 
-    await tg_bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, reply_markup=keyboard)
+    await tg_bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, reply_markup=keyboard, parse_mode="HTML")

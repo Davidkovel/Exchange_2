@@ -4,9 +4,9 @@ from sqlalchemy import select, or_, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.routers.auth.schemas import OAuthForm, userEmail, UserModel
+from src.routers.payment.model import WithdrawTransaction
 from src.utils.hasher import Hasher
 from src.routers.auth.model import User
-
 
 
 async def insert_address_by_user_email(db_session: AsyncSession, user_data: UserModel, wallet_address: str):
@@ -18,6 +18,7 @@ async def insert_address_by_user_email(db_session: AsyncSession, user_data: User
 
     await db_session.execute(stmt)
     await db_session.commit()
+
 
 async def get_user_by(db_session: AsyncSession, user_data: UserModel):
     query = select(User).where(
@@ -66,7 +67,6 @@ async def authenticate_user(db_session: AsyncSession, form_data: UserModel) -> U
     return user
 
 
-
 # Transactions
 
 async def get_user_balance_by_user_email(db_session: AsyncSession, user_email: userEmail) -> float:
@@ -76,6 +76,7 @@ async def get_user_balance_by_user_email(db_session: AsyncSession, user_email: u
     user_balance = result.scalar_one_or_none()
     return user_balance if user_balance is not None else 0.0
 
+
 async def withdraw_balance_by_user_email(db_session: AsyncSession, user_email: userEmail, amount: float):
     stmt = (
         update(User).where(User.email == user_email)
@@ -84,3 +85,12 @@ async def withdraw_balance_by_user_email(db_session: AsyncSession, user_email: u
 
     await db_session.execute(stmt)
     await db_session.commit()
+
+
+async def get_withdraw_count(db_session: AsyncSession, user_email: str) -> int:
+    stmt = (
+        select(WithdrawTransaction).filter(WithdrawTransaction.user_email == user_email).count()
+    )
+
+    result = await db_session.execute(stmt)
+    return result
